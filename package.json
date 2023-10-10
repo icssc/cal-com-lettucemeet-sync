@@ -1,0 +1,13 @@
+{
+  "name": "cal-com-lettucemeet-sync",
+  "version": "1.0.0",
+  "description": "Group meetings with cal.com without a teams plan.",
+  "license": "MIT",
+  "author": "Alexander Liu <a@alexanderliu.com> (https://alexanderliu.com)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/icssc/cal-com-lettucemeet-sync.git"
+  },
+  "main": "index.js",
+  "scripts": {}
+}
