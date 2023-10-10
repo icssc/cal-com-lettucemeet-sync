@@ -9,5 +9,8 @@
     "url": "https://github.com/icssc/cal-com-lettucemeet-sync.git"
   },
   "main": "index.js",
-  "scripts": {}
+  "scripts": {},
+  "dependencies": {
+    "zod": "^3.22.4"
+  }
 }
