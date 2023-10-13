@@ -9,18 +9,34 @@ export const config = {
 export default async function handler(request: Request) {
   const schedule = Event.parse(testSchedule);
 
-  return new Response(
-    JSON.stringify(
-      parseAvailability(
+  const availabilities = schedule.data.event.pollResponses.map(
+    ({ user: { name }, availabilities }) => ({
+      name,
+      availabilities: parseAvailability(
         schedule.data.event.pollStartTime,
         schedule.data.event.pollEndTime,
         schedule.data.event.pollDates,
-        schedule.data.event.pollResponses[0].availabilities
-      ).map((int) => int.toString())
-    ),
-    {
-      status: 200,
-      headers: {},
-    }
+        availabilities
+      ),
+    })
   );
+
+  const pairs = availabilities.flatMap(
+    ({ name: nameA, availabilities: availabilitiesA }, i) =>
+      availabilities
+        .slice(i + 1)
+        .map(({ name: nameB, availabilities: availabilitiesB }) => ({
+          names: [nameA, nameB],
+          availabilities: availabilitiesA.map((availability, i) =>
+            Number(availability & availabilitiesB[i])
+          ),
+        }))
+  );
+
+  return new Response(JSON.stringify(pairs), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 }
