@@ -12,7 +12,6 @@ const parseAvailability = (
   const availability = [] as bigint[];
   // Looping though each date
   for (const date of pollDates) {
-    console.log("date " + date);
     let bits = 0n;
     // Looping though each 30 minute segment
     for (let i = 0; i < segments; i++) {
