@@ -11,6 +11,11 @@
   "main": "index.js",
   "scripts": {},
   "dependencies": {
+    "set-cookie-parser": "^2.6.0",
+    "superjson": "^1.9.1",
     "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/set-cookie-parser": "^2.4.4"
   }
 }

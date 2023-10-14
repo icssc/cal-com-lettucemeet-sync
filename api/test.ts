@@ -1,3 +1,5 @@
+import getAuthenticatedCookies from "../lib/getAuthenticatedCookies";
+import getCalAvailabilities from "../lib/getCalAvailabilities";
 import parseAvailability from "../lib/parseAvailability";
 import testSchedule from "../lib/testSchedule.json";
 import { Event } from "../lib/types";
@@ -7,6 +9,18 @@ export const config = {
 };
 
 export default async function handler(request: Request) {
+  const authenticatedCookies = await getAuthenticatedCookies();
+
+  return new Response(
+    JSON.stringify(await getCalAvailabilities(authenticatedCookies)),
+    {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
   const schedule = Event.parse(testSchedule);
 
   const availabilities = schedule.data.event.pollResponses.map(
@@ -32,11 +46,4 @@ export default async function handler(request: Request) {
           ),
         }))
   );
-
-  return new Response(JSON.stringify(pairs), {
-    status: 200,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
 }
