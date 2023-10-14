@@ -16,8 +16,8 @@ const getAuthenticatedCookies = async () => {
   );
 
   const credentialsData = new URLSearchParams({
-    email: "",
-    password: "",
+    email: process.env.CAL_COM_EMAIL!,
+    password: process.env.CAL_COM_PASSWORD!,
     csrfToken,
     callbackUrl: "https://app.cal.com/",
     redirect: "false",
