@@ -1,15 +1,12 @@
 import type { DateRange } from "moment-range";
+import { Receiver } from "@upstash/qstash";
 import getAuthenticatedCookies from "../lib/cal/getAuthenticatedCookies";
 import getCalAvailabilities from "../lib/cal/getCalAvailabilities";
 import setCalSchedulesOverrides from "../lib/cal/setCalSchedulesOverrides";
 import availabilitiesPairs from "../lib/availabilitiesPairs";
 import getCalEvents from "../lib/cal/getCalEvents";
 import moment from "../lib/moment";
-
-import testSchedule from "../lib/testSchedule.json";
 import { Event } from "../lib/types";
-
-import { Receiver } from "@upstash/qstash";
 
 export const config = {
   runtime: "edge",
@@ -32,9 +29,23 @@ export default async function handler(request: Request) {
     });
   }
 
+  const eventResponse = await fetch("https://api.lettucemeet.com/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id: "EventQuery",
+      query:
+        "query EventQuery(\n  $id: ID!\n) {\n  event(id: $id) {\n    ...Event_event\n    ...EditEvent_event\n    id\n  }\n}\n\nfragment EditEvent_event on Event {\n  id\n  title\n  description\n  type\n  pollStartTime\n  pollEndTime\n  maxScheduledDurationMins\n  pollDates\n  isScheduled\n  start\n  end\n  timeZone\n  updatedAt\n}\n\nfragment Event_event on Event {\n  id\n  title\n  description\n  type\n  pollStartTime\n  pollEndTime\n  maxScheduledDurationMins\n  timeZone\n  pollDates\n  start\n  end\n  isScheduled\n  createdAt\n  updatedAt\n  user {\n    id\n  }\n  googleEvents {\n    title\n    start\n    end\n  }\n  pollResponses {\n    id\n    user {\n      __typename\n      ... on AnonymousUser {\n        name\n        email\n      }\n      ... on User {\n        id\n        name\n        email\n      }\n      ... on Node {\n        __isNode: __typename\n        id\n      }\n    }\n    availabilities {\n      start\n      end\n    }\n    event {\n      id\n    }\n  }\n}\n",
+      variables: { id: "7YZ9j" },
+    }),
+  });
+  const event = await eventResponse.json();
+  const schedule = Event.parse(event);
+
   const authenticatedCookies = await getAuthenticatedCookies();
   const calAvailabilities = await getCalAvailabilities(authenticatedCookies);
-  const schedule = Event.parse(testSchedule);
   const pollDates = schedule.data.event.pollDates;
 
   const pairs = availabilitiesPairs(schedule);
