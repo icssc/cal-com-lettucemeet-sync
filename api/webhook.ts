@@ -10,7 +10,7 @@ const c = new Client({
 
 export default async function handler(request: Request) {
   const date = new Date();
-  const minute = date.getUTCMinutes() + 1;
+  const minute = date.getUTCMinutes() + 5;
 
   const notBefore =
     new Date(new Date(date).setMinutes(minute)).valueOf() / 1000;
