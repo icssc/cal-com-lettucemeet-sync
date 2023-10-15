@@ -11,18 +11,7 @@ export const Availability = z.object({
       endTime: z.number(),
     })
   ),
-  availability: z.array(
-    z.union([
-      z.array(z.unknown()),
-      z.array(z.object({ start: z.string(), end: z.string() })),
-    ])
-  ),
   timeZone: z.string(),
-  dateOverrides: z.array(
-    z.object({
-      ranges: z.array(z.object({ start: z.string(), end: z.string() })),
-    })
-  ),
   isDefault: z.boolean(),
   isLastSchedule: z.boolean(),
   readOnly: z.boolean(),

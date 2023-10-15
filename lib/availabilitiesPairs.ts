@@ -4,6 +4,14 @@ import type { DateRange } from "moment-range";
 import moment from "./moment";
 import parseAvailability from "./parseAvailability";
 
+const lettucemeetNameToCalName = new Map<string, string>([
+  ["Katy Huang", "katy"],
+  ["Eric", "eric"],
+  ["Bryan Silva", "bryan"],
+  ["Jacob Sommer", "jacob"],
+  ["Eddy Chen", "eddy"],
+]);
+
 const availabilitiesPairs = (schedule: z.infer<typeof Event>) => {
   const pollStartTime = schedule.data.event.pollStartTime;
   const pollEndTime = schedule.data.event.pollEndTime;
@@ -28,7 +36,10 @@ const availabilitiesPairs = (schedule: z.infer<typeof Event>) => {
       availabilities
         .slice(i + 1)
         .map(({ name: nameB, availabilities: availabilitiesB }) => ({
-          names: [nameA, nameB],
+          names: [
+            lettucemeetNameToCalName.get(nameA)!,
+            lettucemeetNameToCalName.get(nameB)!,
+          ],
           availabilities: availabilitiesA.map(
             (availability, i) => availability & availabilitiesB[i]
           ),
@@ -37,7 +48,7 @@ const availabilitiesPairs = (schedule: z.infer<typeof Event>) => {
 
   return pairs.map(({ names, availabilities }) => ({
     names,
-    availabilities: availabilities.map((number) => Number(number)),
+    availabilities,
     availabilitiesRanges: availabilities.map((availability, i) => {
       const date = pollDates[i];
       const dates = [] as Date[];

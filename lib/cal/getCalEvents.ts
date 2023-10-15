@@ -1,4 +1,5 @@
 import z from "zod";
+import moment from "../moment";
 
 const Events = z.array(
   z.object({
@@ -7,8 +8,30 @@ const Events = z.array(
         json: z.object({
           bookings: z.array(
             z.object({
-              startTime: z.string().datetime(),
-              endTime: z.string().datetime(),
+              startTime: z
+                .string()
+                .datetime()
+                .transform(
+                  (date) =>
+                    new Date(
+                      moment
+                        .tz(date, "America/Los_Angeles")
+                        .add(-15, "m")
+                        .format("YYYY-MM-DD[T]HH:mm:ss[Z]")
+                    )
+                ),
+              endTime: z
+                .string()
+                .datetime()
+                .transform(
+                  (date) =>
+                    new Date(
+                      moment
+                        .tz(date, "America/Los_Angeles")
+                        .add(15, "m")
+                        .format("YYYY-MM-DD[T]HH:mm:ss[Z]")
+                    )
+                ),
               eventType: z.object({
                 slug: z.string(),
               }),
