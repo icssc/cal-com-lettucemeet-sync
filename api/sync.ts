@@ -9,11 +9,29 @@ import moment from "../lib/moment";
 import testSchedule from "../lib/testSchedule.json";
 import { Event } from "../lib/types";
 
+import { Receiver } from "@upstash/qstash";
+
 export const config = {
   runtime: "edge",
 };
 
+const r = new Receiver({
+  currentSigningKey: process.env.QSTASH_CURRENT_SIGNING_KEY!,
+  nextSigningKey: process.env.QSTASH_NEXT_SIGNING_KEY!,
+});
+
 export default async function handler(request: Request) {
+  const isValid = await r.verify({
+    signature: request.headers.get("upstash-signature") ?? "",
+    body: await request.text(),
+  });
+
+  if (!isValid) {
+    return new Response("Invalid signature.", {
+      status: 400,
+    });
+  }
+
   const authenticatedCookies = await getAuthenticatedCookies();
   const calAvailabilities = await getCalAvailabilities(authenticatedCookies);
   const schedule = Event.parse(testSchedule);
