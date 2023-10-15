@@ -16,7 +16,7 @@ export default async function handler(request: Request) {
     new Date(new Date(date).setMinutes(minute)).valueOf() / 1000;
 
   const res = await c.publishJSON({
-    url: "https://5a67-2600-8802-2102-af00-48bb-44d-be74-a4c1.ngrok-free.app/api/sync",
+    url: "https://cal-com-lettucemeet-sync.alexanderliu.dev/api/sync",
     deduplicationId: `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}-${date.getUTCHours()}-${minute}`,
     notBefore,
   });
