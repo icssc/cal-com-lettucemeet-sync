@@ -10,6 +10,7 @@ const lettucemeetNameToCalName = new Map<string, string>([
   ["Bryan Silva", "bryan"],
   ["Jacob Sommer", "jacob"],
   ["Eddy Chen", "eddy"],
+  ["Alexander Liu", "alexander"],
 ]);
 
 const availabilitiesPairs = (schedule: z.infer<typeof Event>) => {
