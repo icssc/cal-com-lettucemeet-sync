@@ -64,14 +64,12 @@ export default async function handler(request: Request) {
           startTime.getUTCFullYear() === date.getUTCFullYear()
       );
 
-      const newRanges = [] as DateRange[];
-      ranges.forEach((range) =>
-        sameDayEvents.forEach((event) =>
-          newRanges.push(
-            ...range.subtract(moment.range(event.startTime, event.endTime))
-          )
-        )
-      );
+      let newRanges = [...ranges];
+      for (const event of sameDayEvents) {
+        newRanges = newRanges.flatMap((range) =>
+          range.subtract(moment.range(event.startTime, event.endTime))
+        );
+      }
 
       return sameDayEvents.length ? newRanges : ranges;
     }),
